@@ -14,6 +14,9 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://takuro278.github.io/imported-blackjack/">
 
+  <!-- PeerJS (オンライン対戦用通信ライブラリ) -->
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+
   <style>
     :root {
       --bg-gradient: radial-gradient(circle at center, #1b4d3e 0%, #0a1f18 70%, #050d0a 100%);
@@ -178,22 +181,6 @@
       border: 2px solid var(--accent-gold);
     }
 
-    /* カードめくりアニメーション */
-    .card.flip-anim {
-      animation: cardFlip 0.5s ease-out;
-    }
-
-    @keyframes cardFlip {
-      0% {
-        transform: rotateY(90deg) scale(0.8);
-        opacity: 0.3;
-      }
-      100% {
-        transform: rotateY(0deg) scale(1);
-        opacity: 1;
-      }
-    }
-
     .card-badge {
       position: absolute;
       top: -6px;
@@ -209,6 +196,22 @@
 
     .badge-open { background: var(--accent-blue); }
     .badge-traded { background: var(--accent-gold); }
+
+    /* カードめくりアニメーション */
+    .card.flip-anim {
+      animation: cardFlip 0.5s ease-out;
+    }
+
+    @keyframes cardFlip {
+      0% {
+        transform: rotateY(90deg) scale(0.8);
+        opacity: 0.3;
+      }
+      100% {
+        transform: rotateY(0deg) scale(1);
+        opacity: 1;
+      }
+    }
 
     /* 中央操作パネル */
     .center-panel {
@@ -236,6 +239,7 @@
       gap: 8px;
       width: 100%;
       justify-content: center;
+      flex-wrap: wrap;
     }
 
     button {
@@ -266,6 +270,23 @@
     button.btn-trade {
       background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
       color: white;
+    }
+
+    input[type="text"] {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--panel-border);
+      color: #fff;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      text-align: center;
+      width: 100%;
+      margin: 10px 0;
+      letter-spacing: 4px;
+      outline: none;
+    }
+    input[type="text"]:focus {
+      border-color: var(--accent-gold);
     }
 
     /* モーダル */
@@ -299,6 +320,47 @@
       margin-bottom: 8px;
     }
 
+    .deck-builder-pool {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin: 12px 0;
+    }
+
+    .pool-card {
+      background: #fff;
+      border-radius: 4px;
+      padding: 6px 2px;
+      font-weight: bold;
+      font-size: 0.85rem;
+      color: #222;
+      cursor: pointer;
+      border: 2px solid transparent;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    .pool-card.red { color: var(--accent-red); }
+    .pool-card.black { color: #1a252f; }
+
+    .pool-card.selected-pool {
+      background: #2a3a30;
+      color: #555 !important;
+      border-color: #444;
+      opacity: 0.6;
+    }
+
+    .pool-card.selected-pool::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--accent-gold);
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
     .builder-slots {
       display: flex;
       justify-content: center;
@@ -309,90 +371,25 @@
     .slot {
       width: 52px;
       height: 72px;
-      border: 2px dashed rgba(255,255,255,0.3);
+      border: 1px dashed rgba(255,255,255,0.3);
       border-radius: 6px;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       font-weight: bold;
       font-size: 0.9rem;
-      color: rgba(255,255,255,0.5);
       cursor: pointer;
-      transition: all 0.2s ease;
-      position: relative;
-    }
-
-    .slot:hover {
-      border-color: var(--accent-gold);
+      transition: all 0.2s;
     }
 
     .slot.filled {
+      background: linear-gradient(145deg, #ffffff, #e6e6e6);
       border: 2px solid var(--accent-gold);
-      background: #ffffff;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-      font-size: 1.1rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
     }
-
-    .slot.filled.red {
-      color: #e74c3c !important;
-    }
-
-    .slot.filled.black {
-      color: #1a252f !important;
-    }
-
-    .slot.filled::after {
-      content: '✕';
-      position: absolute;
-      top: 2px;
-      right: 4px;
-      font-size: 0.65rem;
-      color: #888;
-      opacity: 0.7;
-    }
-
-    .deck-builder-pool {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
-      margin: 12px 0;
-    }
-
-    .pool-card {
-      background: #fff;
-      border-radius: 6px;
-      padding: 8px 2px;
-      font-weight: bold;
-      font-size: 0.9rem;
-      color: #222;
-      cursor: pointer;
-      border: 2px solid transparent;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-      transition: all 0.15s ease;
-      position: relative;
-    }
-
-    .pool-card.red { color: #e74c3c; }
-    .pool-card.black { color: #1a252f; }
-
-    .pool-card.selected-pool {
-      background: #23332b;
-      border-color: var(--accent-gold);
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
-    }
-
-    .pool-card.selected-pool.red { color: #e74c3c; opacity: 0.65; }
-    .pool-card.selected-pool.black { color: #cbd5e1; opacity: 0.65; }
-
-    .pool-card.selected-pool::after {
-      content: '✓';
-      position: absolute;
-      top: 1px;
-      right: 3px;
-      font-size: 0.65rem;
-      color: var(--accent-gold);
-      font-weight: bold;
-    }
+    .slot.filled.red { color: var(--accent-red); }
+    .slot.filled.black { color: #1a252f; }
 
     .hidden { display: none !important; }
   </style>
@@ -404,13 +401,13 @@
     <div class="sub-title">～ さらば青春の光 / ちゃんぴおんず大津考案 ～</div>
   </header>
 
-  <div class="phase-bar" id="phaseBar">ゲームを準備中...</div>
+  <div class="phase-bar" id="phaseBar">ゲームモードを選択してください</div>
 
   <div class="table-container">
-    <!-- CPUエリア -->
+    <!-- CPU/対戦相手エリア -->
     <div class="player-area">
       <div class="area-header">
-        <span>対戦相手 (CPU)</span>
+        <span id="oppTitle">対戦相手 (CPU)</span>
         <span class="score-badge" id="cpuScore">合計: ??</span>
       </div>
       <div class="card-hand" id="cpuHand"></div>
@@ -418,7 +415,7 @@
 
     <!-- 中央エリア -->
     <div class="center-panel">
-      <div class="msg-box" id="msgBox">手札を作成してください。</div>
+      <div class="msg-box" id="msgBox">モードを選択してゲームを開始してください。</div>
       <div class="btn-group" id="actionBtns"></div>
     </div>
 
@@ -432,18 +429,60 @@
     </div>
   </div>
 
-  <!-- 手札構築モーダル -->
-  <div class="modal-overlay" id="deckModal">
+  <!-- 1. モード選択モーダル -->
+  <div class="modal-overlay" id="modeModal">
+    <div class="modal-content">
+      <div class="modal-title">モード選択</div>
+      <p style="font-size:0.85rem; margin: 12px 0; color:#ccc;">対戦方法を選んでください</p>
+      <div class="btn-group" style="flex-direction: column; gap: 10px;">
+        <button onclick="selectMode('cpu')">🤖 CPUと対戦</button>
+        <button onclick="selectMode('online')">📱 友達と対戦 (オンライン)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. オンライン接続モーダル -->
+  <div class="modal-overlay hidden" id="onlineModal">
+    <div class="modal-content">
+      <div class="modal-title">友達と対戦</div>
+      
+      <!-- 部屋作成 / 参加選択 -->
+      <div id="onlineMenu">
+        <p style="font-size:0.8rem; margin-bottom:12px; color:#ccc;">部屋を作成するか、友達の部屋番号を入力してください。</p>
+        <div class="btn-group" style="flex-direction: column; gap: 10px;">
+          <button onclick="createRoom()">部屋を作成する (ホスト)</button>
+          <button onclick="showJoinInput()">部屋に参加する (ゲスト)</button>
+          <button onclick="backToModeSelect()" style="background:#555; color:#fff;">戻る</button>
+        </div>
+      </div>
+
+      <!-- 部屋作成・待機中 -->
+      <div id="onlineWaiting" class="hidden">
+        <p style="font-size:0.85rem; color:#ccc;">あい言葉 (4桁の数字) を友達に伝えてください</p>
+        <div style="font-size: 2rem; font-weight: bold; color: var(--accent-gold); margin: 15px 0; letter-spacing: 4px;" id="displayRoomId">----</div>
+        <p style="font-size:0.8rem; color: #888;">相手の接続を待っています...</p>
+        <button onclick="cancelOnline()" style="margin-top:15px; background:#555; color:#fff;">キャンセル</button>
+      </div>
+
+      <!-- 部屋参加・ID入力 -->
+      <div id="onlineJoin" class="hidden">
+        <p style="font-size:0.85rem; color:#ccc;">教えてもらったあい言葉 (4桁) を入力</p>
+        <input type="text" id="joinRoomId" maxlength="4" placeholder="例: 1234">
+        <div class="btn-group">
+          <button onclick="joinRoom()">接続する</button>
+          <button onclick="cancelOnline()" style="background:#555; color:#fff;">戻る</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 手札構築モーダル -->
+  <div class="modal-overlay hidden" id="deckModal">
     <div class="modal-content">
       <div class="modal-title">手札（4枚）の作成</div>
-      <p style="font-size:0.75rem; margin-bottom:8px; color:#ccc;">合計が<b>21以下</b>になるように選んでください。</p>
+      <p style="font-size:0.75rem; margin-bottom:8px; color:#ccc;">合計が<b>21以下</b>になるように選んでください。<br><span style="color:var(--accent-gold);">※セットしたカードをタップで解除できます</span></p>
       
-      <div class="builder-slots" id="builderSlots">
-        <div class="slot">1</div>
-        <div class="slot">2</div>
-        <div class="slot">3</div>
-        <div class="slot">4</div>
-      </div>
+      <div class="builder-slots" id="builderSlots"></div>
 
       <div style="font-size: 1rem; font-weight: bold; margin-bottom: 10px;">
         現在の合計: <span id="builderTotal" style="color:var(--accent-gold);">0</span> / 21
@@ -458,7 +497,7 @@
     </div>
   </div>
 
-  <!-- 結果発表モーダル -->
+  <!-- 4. 結果発表モーダル -->
   <div class="modal-overlay hidden" id="resultModal">
     <div class="modal-content">
       <div class="modal-title" id="resultTitle">結果発表</div>
@@ -468,31 +507,143 @@
   </div>
 
   <script>
+    // ゲーム状態
+    let gameMode = 'cpu'; // 'cpu' or 'online'
+    let isHost = false;
+    let peer = null;
+    let conn = null;
+
     let playerHand = [];
-    let cpuHand = [];
+    let cpuHand = []; // オンライン時は相手（Opponent）の手札
     let phase = 'INIT';
-    let firstPlayer = '';
+    let firstPlayer = ''; // 'player' or 'cpu' ('host' / 'guest')
     let currentTurnPlayer = '';
     let selectedPlayerCardIndex = null;
     let turnCount = 1;
+
+    // オンライン動期用フラグ
+    let myDeckReady = false;
+    let oppDeckReady = false;
+    let myTradeChoice = null;
+    let oppTradeChoice = null;
 
     const suits = [{s:'♠', c:'black'}, {s:'♥', c:'red'}];
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
     window.onload = () => {
-      initDeckBuilder();
+      showModeModal();
     };
 
+    function showModeModal() {
+      document.getElementById('modeModal').classList.remove('hidden');
+      document.getElementById('onlineModal').classList.add('hidden');
+      document.getElementById('deckModal').classList.add('hidden');
+      document.getElementById('resultModal').classList.add('hidden');
+    }
+
+    function selectMode(mode) {
+      gameMode = mode;
+      document.getElementById('modeModal').classList.add('hidden');
+
+      if (gameMode === 'cpu') {
+        document.getElementById('oppTitle').innerText = '対戦相手 (CPU)';
+        initDeckBuilder();
+      } else {
+        document.getElementById('oppTitle').innerText = '対戦相手 (友人)';
+        showOnlineModal();
+      }
+    }
+
+    /* --- オンライン通信 (PeerJS) 処理 --- */
+    function showOnlineModal() {
+      document.getElementById('onlineModal').classList.remove('hidden');
+      document.getElementById('onlineMenu').classList.remove('hidden');
+      document.getElementById('onlineWaiting').classList.add('hidden');
+      document.getElementById('onlineJoin').classList.add('hidden');
+    }
+
+    function backToModeSelect() {
+      showModeModal();
+    }
+
+    function createRoom() {
+      isHost = true;
+      const roomId = Math.floor(1000 + Math.random() * 9000).toString();
+      document.getElementById('displayRoomId').innerText = roomId;
+
+      document.getElementById('onlineMenu').classList.add('hidden');
+      document.getElementById('onlineWaiting').classList.remove('hidden');
+
+      peer = new Peer('imp-bj-' + roomId);
+
+      peer.on('open', id => {
+        console.log('Room created:', id);
+      });
+
+      peer.on('connection', c => {
+        conn = c;
+        setupConnection();
+      });
+
+      peer.on('error', err => {
+        alert('エラーが発生しました。別のIDでお試しください。');
+        cancelOnline();
+      });
+    }
+
+    function showJoinInput() {
+      document.getElementById('onlineMenu').classList.add('hidden');
+      document.getElementById('onlineJoin').classList.remove('hidden');
+    }
+
+    function joinRoom() {
+      isHost = false;
+      const roomId = document.getElementById('joinRoomId').value.trim();
+      if (roomId.length !== 4) {
+        alert('4桁のあい言葉を入力してください。');
+        return;
+      }
+
+      peer = new Peer();
+      peer.on('open', id => {
+        conn = peer.connect('imp-bj-' + roomId);
+        setupConnection();
+      });
+
+      peer.on('error', err => {
+        alert('部屋が見つかりませんでした。あい言葉を確認してください。');
+      });
+    }
+
+    function setupConnection() {
+      conn.on('open', () => {
+        document.getElementById('onlineModal').classList.add('hidden');
+        initDeckBuilder();
+      });
+
+      conn.on('data', data => {
+        handleOnlineData(data);
+      });
+
+      conn.on('close', () => {
+        alert('相手との通信が切断されました。');
+        location.reload();
+      });
+    }
+
+    function cancelOnline() {
+      if (peer) peer.destroy();
+      showOnlineModal();
+    }
+
+    /* --- 手札構築処理 --- */
     function initDeckBuilder() {
       const poolContainer = document.getElementById('cardPool');
       poolContainer.innerHTML = '';
       playerHand = [];
-
-      // スロットクリックで解除可能にする
-      const slots = document.querySelectorAll('.slot');
-      slots.forEach((slot, idx) => {
-        slot.onclick = () => removeSlotCard(idx);
-      });
+      myDeckReady = false;
+      oppDeckReady = false;
+      updateBuilderUI();
 
       for (let val = 1; val <= 10; val++) {
         suits.forEach(suit => {
@@ -505,52 +656,53 @@
           poolContainer.appendChild(cardEl);
         });
       }
-
-      updateBuilderUI();
       document.getElementById('deckModal').classList.remove('hidden');
     }
 
     function selectPoolCard(value, suit, color) {
-      if (playerHand.some(c => c.suit === suit && c.value === value)) return;
       if (playerHand.length >= 4) return;
+      const existsIndex = playerHand.findIndex(c => c.value === value && c.suit === suit);
+      if (existsIndex !== -1) return;
 
-      playerHand.push({ value, suit, color, faceUp: false, isTraded: false, isOpenInitial: false, justFlipped: false });
+      playerHand.push({ value, suit, color, faceUp: false, isTraded: false, isOpenInitial: false });
       updateBuilderUI();
     }
 
     function removeSlotCard(index) {
-      if (index < playerHand.length) {
-        playerHand.splice(index, 1);
-        updateBuilderUI();
-      }
+      playerHand.splice(index, 1);
+      updateBuilderUI();
     }
 
     function updateBuilderUI() {
-      const slots = document.querySelectorAll('.slot');
+      const slotsContainer = document.getElementById('builderSlots');
+      slotsContainer.innerHTML = '';
       let sum = 0;
 
-      // プール内のカードの選択状態を更新
-      const poolCards = document.querySelectorAll('.pool-card');
-      poolCards.forEach(cardEl => {
+      for (let i = 0; i < 4; i++) {
+        const slot = document.createElement('div');
+        if (playerHand[i]) {
+          slot.className = `slot filled ${playerHand[i].color}`;
+          slot.innerHTML = `
+            <div>${playerHand[i].suit}</div>
+            <div style="font-size:1.1rem;">${playerHand[i].value}</div>
+          `;
+          slot.onclick = () => removeSlotCard(i);
+          sum += playerHand[i].value;
+        } else {
+          slot.className = 'slot';
+          slot.innerText = i + 1;
+        }
+        slotsContainer.appendChild(slot);
+      }
+
+      document.querySelectorAll('.pool-card').forEach(cardEl => {
+        const val = parseInt(cardEl.dataset.value);
         const suit = cardEl.dataset.suit;
-        const value = parseInt(cardEl.dataset.value, 10);
-        const isSelected = playerHand.some(c => c.suit === suit && c.value === value);
+        const isSelected = playerHand.some(c => c.value === val && c.suit === suit);
         if (isSelected) {
           cardEl.classList.add('selected-pool');
         } else {
           cardEl.classList.remove('selected-pool');
-        }
-      });
-
-      // スロット（手札）の表示更新
-      slots.forEach((slot, i) => {
-        if (playerHand[i]) {
-          slot.className = `slot filled ${playerHand[i].color}`;
-          slot.innerHTML = `${playerHand[i].suit}${playerHand[i].value}`;
-          sum += playerHand[i].value;
-        } else {
-          slot.className = 'slot';
-          slot.innerHTML = i + 1;
         }
       });
 
@@ -564,7 +716,6 @@
 
     function autoFillDeck() {
       playerHand = [];
-
       while (true) {
         let tempHand = [];
         let pool = [];
@@ -579,7 +730,7 @@
 
         const sum = tempHand.reduce((a, b) => a + b.value, 0);
         if (sum <= 21) {
-          playerHand = tempHand.map(c => ({ ...c, faceUp: false, isTraded: false, isOpenInitial: false, justFlipped: false }));
+          playerHand = tempHand.map(c => ({ ...c, faceUp: false, isTraded: false, isOpenInitial: false }));
           break;
         }
       }
@@ -587,9 +738,23 @@
     }
 
     function confirmPlayerDeck() {
-      document.getElementById('deckModal').classList.add('hidden');
-      buildCpuHand();
-      startBoardGame();
+      if (gameMode === 'cpu') {
+        document.getElementById('deckModal').classList.add('hidden');
+        buildCpuHand();
+        startBoardGame();
+      } else {
+        // オンライン対戦時
+        myDeckReady = true;
+        document.getElementById('confirmDeckBtn').disabled = true;
+        document.getElementById('confirmDeckBtn').innerText = '相手の選択待ち...';
+        
+        conn.send({ type: 'DECK_CONFIRMED', hand: playerHand });
+
+        if (oppDeckReady) {
+          document.getElementById('deckModal').classList.add('hidden');
+          if (isHost) startBoardGameOnlineHost();
+        }
+      }
     }
 
     function buildCpuHand() {
@@ -608,12 +773,13 @@
 
         const sum = tempHand.reduce((a, b) => a + b.value, 0);
         if (sum >= 15 && sum <= 21) {
-          cpuHand = tempHand.map(c => ({ ...c, faceUp: false, isTraded: false, isOpenInitial: false, justFlipped: false }));
+          cpuHand = tempHand.map(c => ({ ...c, faceUp: false, isTraded: false, isOpenInitial: false }));
           break;
         }
       }
     }
 
+    /* --- ボードゲーム進行 (CPU & オンライン共通) --- */
     function startBoardGame() {
       renderHands();
       setPhase('1枚ランダムオープン');
@@ -624,16 +790,66 @@
 
         playerHand[pIdx].faceUp = true;
         playerHand[pIdx].isOpenInitial = true;
-        playerHand[pIdx].justFlipped = true;
-
         cpuHand[cIdx].faceUp = true;
         cpuHand[cIdx].isOpenInitial = true;
-        cpuHand[cIdx].justFlipped = true;
 
         renderHands();
         setMsg(`1枚ずつ公開されました！<br>あなた: <b>${playerHand[pIdx].suit}${playerHand[pIdx].value}</b> / CPU: <b>${cpuHand[cIdx].suit}${cpuHand[cIdx].value}</b>`);
 
         setTimeout(determineInitiative, 2000);
+      }, 800);
+    }
+
+    function startBoardGameOnlineHost() {
+      const pOpenIdx = Math.floor(Math.random() * 4);
+      const oOpenIdx = Math.floor(Math.random() * 4);
+
+      let pDraw = Math.floor(Math.random() * 10) + 1;
+      let oDraw = Math.floor(Math.random() * 10) + 1;
+      while (pDraw === oDraw) {
+        oDraw = Math.floor(Math.random() * 10) + 1;
+      }
+
+      const hostFirst = pDraw > oDraw;
+
+      conn.send({
+        type: 'START_GAME_DATA',
+        hostOpenIdx: pOpenIdx,
+        guestOpenIdx: oOpenIdx,
+        hostDraw: pDraw,
+        guestDraw: oDraw,
+        hostFirst: hostFirst
+      });
+
+      setupBoardGameOnline(pOpenIdx, oOpenIdx, pDraw, oDraw, hostFirst);
+    }
+
+    function setupBoardGameOnline(myOpenIdx, oppOpenIdx, myDraw, oppDraw, amIFirst) {
+      renderHands();
+      setPhase('1枚ランダムオープン');
+
+      setTimeout(() => {
+        playerHand[myOpenIdx].faceUp = true;
+        playerHand[myOpenIdx].isOpenInitial = true;
+        cpuHand[oppOpenIdx].faceUp = true;
+        cpuHand[oppOpenIdx].isOpenInitial = true;
+
+        renderHands();
+        setMsg(`1枚ずつ公開されました！<br>あなた: <b>${playerHand[myOpenIdx].suit}${playerHand[myOpenIdx].value}</b> / 相手: <b>${cpuHand[oppOpenIdx].suit}${cpuHand[oppOpenIdx].value}</b>`);
+
+        setTimeout(() => {
+          setPhase('先攻・後攻決定');
+          firstPlayer = amIFirst ? 'player' : 'cpu';
+          const firstStr = amIFirst ? 'あなた' : '対戦相手';
+
+          setMsg(`引き札勝負 (あなた:${myDraw} VS 相手:${oppDraw})<br><b>${firstStr}</b> の先攻です！`);
+
+          setTimeout(() => {
+            turnCount = 1;
+            currentTurnPlayer = firstPlayer;
+            startTurn();
+          }, 2000);
+        }, 2000);
       }, 800);
     }
 
@@ -660,24 +876,32 @@
     }
 
     function startTurn() {
-      setPhase(`ターン ${turnCount} (${currentTurnPlayer === 'player' ? 'あなたの番' : 'CPUの番'})`);
+      const isMyTurn = currentTurnPlayer === 'player';
+      setPhase(`ターン ${turnCount} (${isMyTurn ? 'あなたの番' : '相手の番'})`);
 
-      if (currentTurnPlayer === 'player') {
+      if (isMyTurn) {
         setMsg('あなたの番です。アクションを選択してください。');
         showActionButtons([
           { text: 'チェック', class: 'btn-check', action: () => handleCheck() },
           { text: 'トレード', class: 'btn-trade', action: () => prepareTrade() }
         ]);
       } else {
-        setMsg('CPUが長考しています...');
+        setMsg(gameMode === 'cpu' ? 'CPUが思考中です...' : '相手の行動を選択中です...');
         hideActionButtons();
-        setTimeout(cpuDecideTurn, 1800);
+        if (gameMode === 'cpu') {
+          setTimeout(cpuDecideTurn, 1800);
+        }
       }
     }
 
     function handleCheck() {
-      setMsg(`${currentTurnPlayer === 'player' ? 'あなた' : 'CPU'} は <b>チェック</b> を選択しました。`);
+      setMsg(`${currentTurnPlayer === 'player' ? 'あなた' : '相手'} は <b>チェック</b> を選択しました。`);
       hideActionButtons();
+
+      if (gameMode === 'online' && currentTurnPlayer === 'player') {
+        conn.send({ type: 'ACTION_CHECK' });
+      }
+
       setTimeout(nextTurn, 1200);
     }
 
@@ -700,18 +924,35 @@
 
     function executeTrade() {
       const pIdx = selectedPlayerCardIndex;
-      const cIdx = cpuSelectCardToTrade();
+      hideActionButtons();
 
+      if (gameMode === 'cpu') {
+        const cIdx = cpuSelectCardToTrade();
+        applyTrade(pIdx, cIdx);
+      } else {
+        // オンライン対戦時のトレード
+        myTradeChoice = pIdx;
+        setMsg('相手の交換カード選択を待っています...');
+
+        if (currentTurnPlayer === 'player') {
+          // 自分が宣言者の場合
+          conn.send({ type: 'TRADE_DECLARE', cardIdx: pIdx });
+        } else {
+          // 相手の宣言に対して自分が応答した場合
+          conn.send({ type: 'TRADE_RESPONSE', cardIdx: pIdx });
+          applyTradeOnline();
+        }
+      }
+    }
+
+    function applyTrade(pIdx, cIdx) {
       const pCard = playerHand[pIdx];
       const cCard = cpuHand[cIdx];
 
       pCard.faceUp = true;
       pCard.isTraded = true;
-      pCard.justFlipped = true;
-
       cCard.faceUp = true;
       cCard.isTraded = true;
-      cCard.justFlipped = true;
 
       playerHand[pIdx] = cCard;
       cpuHand[cIdx] = pCard;
@@ -720,9 +961,16 @@
       renderHands();
 
       setMsg(`トレード成立！<br>渡したカード: <b>${pCard.suit}${pCard.value}</b><br>受け取ったカード: <b>${cCard.suit}${cCard.value}</b>`);
-      hideActionButtons();
 
       setTimeout(nextTurn, 2500);
+    }
+
+    function applyTradeOnline() {
+      if (myTradeChoice !== null && oppTradeChoice !== null) {
+        applyTrade(myTradeChoice, oppTradeChoice);
+        myTradeChoice = null;
+        oppTradeChoice = null;
+      }
     }
 
     function nextTurn() {
@@ -735,6 +983,7 @@
       }
     }
 
+    /* --- CPUロジック --- */
     function cpuDecideTurn() {
       const cpuSum = cpuHand.reduce((a, b) => a + b.value, 0);
 
@@ -761,7 +1010,41 @@
       return targetIdx;
     }
 
-    /* 演出を強化した最終勝負処理 */
+    /* --- オンライン受信ハンドラー --- */
+    function handleOnlineData(data) {
+      switch (data.type) {
+        case 'DECK_CONFIRMED':
+          oppHand = data.hand;
+          cpuHand = data.hand;
+          oppDeckReady = true;
+          if (myDeckReady) {
+            document.getElementById('deckModal').classList.add('hidden');
+            if (isHost) startBoardGameOnlineHost();
+          }
+          break;
+
+        case 'START_GAME_DATA':
+          setupBoardGameOnline(data.guestOpenIdx, data.hostOpenIdx, data.guestDraw, data.hostDraw, !data.hostFirst);
+          break;
+
+        case 'ACTION_CHECK':
+          handleCheck();
+          break;
+
+        case 'TRADE_DECLARE':
+          oppTradeChoice = data.cardIdx;
+          setMsg('相手が <b>トレード</b> を宣言しました！<br>交換に出す自分のカードを選択してください。');
+          prepareTrade();
+          break;
+
+        case 'TRADE_RESPONSE':
+          oppTradeChoice = data.cardIdx;
+          applyTradeOnline();
+          break;
+      }
+    }
+
+    /* --- 勝負演出（ショーダウン） --- */
     async function startShowdown() {
       setPhase('最終勝負 (オープン)');
       hideActionButtons();
@@ -771,67 +1054,62 @@
       for (let i = 0; i < playerHand.length; i++) {
         if (!playerHand[i].faceUp) {
           playerHand[i].faceUp = true;
-          playerHand[i].justFlipped = true;
           renderHands();
-          await delay(750);
+          await delay(650);
         }
       }
 
       await delay(400);
 
-      // 2. CPUの裏カードを1枚ずつ開示（ドラムロール的演出）
-      setMsg('CPUの手札を開示中...');
+      // 2. 相手の裏カードを1枚ずつ開示
+      setMsg(`${gameMode === 'cpu' ? 'CPU' : '相手'}の手札を開示中...`);
       for (let i = 0; i < cpuHand.length; i++) {
         if (!cpuHand[i].faceUp) {
           cpuHand[i].faceUp = true;
-          cpuHand[i].justFlipped = true;
           renderHands();
-          await delay(800);
+          await delay(750);
         }
       }
 
-      // CPUの合計得点をオープン表示
-      const cFinalSum = cpuHand.reduce((a, b) => a + b.value, 0);
-      document.getElementById('cpuScore').innerText = `合計: ${cFinalSum}`;
-
       setMsg('勝敗判定中...');
-      await delay(1200);
+      await delay(1000);
 
       // 3. 勝敗判定
       const pSum = playerHand.reduce((a, b) => a + b.value, 0);
-      const cSum = cFinalSum;
+      const cSum = cpuHand.reduce((a, b) => a + b.value, 0);
 
       const pBurst = pSum > 21;
       const cBurst = cSum > 21;
 
+      const oppName = gameMode === 'cpu' ? 'CPU' : '相手';
       let title = '';
-      let detail = `あなた: <b>${pSum}</b> (${pBurst ? 'バースト' : '有効'})<br>CPU: <b>${cSum}</b> (${cBurst ? 'バースト' : '有効'})<br><br>`;
+      let detail = `あなた: <b>${pSum}</b> (${pBurst ? 'バースト' : '有効'})<br>${oppName}: <b>${cSum}</b> (${cBurst ? 'バースト' : '有効'})<br><br>`;
 
       if (pBurst && cBurst) {
         title = '引き分け (両者バースト)';
         detail += '両者21を超えたため引き分けです。';
       } else if (pBurst) {
-        title = 'CPUの勝利！';
+        title = `${oppName}の勝利！`;
         detail += 'あなたがバーストしたため負けです。';
       } else if (cBurst) {
         title = 'あなたの勝利！';
-        detail += 'CPUがバーストしました！';
+        detail += `${oppName}がバーストしました！`;
       } else if (pSum > cSum) {
         title = 'あなたの勝利！';
-        detail += pSum === 21 ? '🎉 ブラックジャック達成！' : '21により近いあなたの勝ちです！';
+        detail += pSum === 21 ? '🎉 ブラックジャック達成！' : `21により近いあなたの勝ちです！`;
       } else if (cSum > pSum) {
-        title = 'CPUの勝利！';
-        detail += 'CPUの方が21に近い数字でした。';
+        title = `${oppName}の勝利！`;
+        detail += `${oppName}の方が21に近い数字でした。`;
       } else {
         const pMax = Math.max(...playerHand.map(c => c.value));
         const cMax = Math.max(...cpuHand.map(c => c.value));
 
-        detail += `同点のためハイカード勝負！<br>あなた最大: <b>${pMax}</b> / CPU最大: <b>${cMax}</b><br><br>`;
+        detail += `同点のためハイカード勝負！<br>あなた最大: <b>${pMax}</b> / ${oppName}最大: <b>${cMax}</b><br><br>`;
 
         if (pMax > cMax) {
           title = 'あなたの勝利！ (ハイカード)';
         } else if (cMax > pMax) {
-          title = 'CPUの勝利！ (ハイカード)';
+          title = `${oppName}の勝利！ (ハイカード)`;
         } else {
           title = '完全な引き分け！';
         }
@@ -847,17 +1125,9 @@
       const pSum = playerHand.reduce((a, b) => a + b.value, 0);
       document.getElementById('playerScore').innerText = `合計: ${pSum}`;
 
-      // CPUの公開済みカードの合計値をリアルタイム表示
-      const cpuVisibleSum = cpuHand.filter(c => c.faceUp).reduce((a, b) => a + b.value, 0);
-      const allCpuFaceUp = cpuHand.length > 0 && cpuHand.every(c => c.faceUp);
-
-      if (allCpuFaceUp) {
-        document.getElementById('cpuScore').innerText = `合計: ${cpuVisibleSum}`;
-      } else if (cpuVisibleSum > 0) {
-        document.getElementById('cpuScore').innerText = `合計: ${cpuVisibleSum} (+?)`;
-      } else {
-        document.getElementById('cpuScore').innerText = `合計: ??`;
-      }
+      const cOpenSum = cpuHand.filter(c => c.faceUp).reduce((a, b) => a + b.value, 0);
+      const allOpen = cpuHand.every(c => c.faceUp);
+      document.getElementById('cpuScore').innerText = allOpen ? `合計: ${cOpenSum}` : `合計: ${cOpenSum} (+?)`;
     }
 
     function renderHand(containerId, hand, isPlayer, selectable) {
@@ -868,9 +1138,7 @@
         const cardEl = document.createElement('div');
         
         if (isPlayer || card.faceUp) {
-          const flipClass = card.justFlipped ? ' flip-anim' : '';
-          cardEl.className = `card ${card.color}${flipClass}`;
-          
+          cardEl.className = `card ${card.color} ${card.faceUp ? 'flip-anim' : ''}`;
           if (isPlayer && !card.faceUp) {
             cardEl.classList.add('my-hidden');
           }
@@ -904,9 +1172,6 @@
         }
 
         container.appendChild(cardEl);
-        
-        // アニメーション再生後にフラグをリセット
-        card.justFlipped = false;
       });
     }
 
@@ -946,7 +1211,12 @@
     function resetGame() {
       document.getElementById('resultModal').classList.add('hidden');
       document.getElementById('cpuScore').innerText = '合計: ??';
-      initDeckBuilder();
+      if (peer) {
+        peer.destroy();
+        peer = null;
+        conn = null;
+      }
+      showModeModal();
     }
   </script>
 </body>
