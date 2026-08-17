@@ -4,24 +4,27 @@
   <meta name="google-site-verification" content="qs0HB9ofYNfHys7YRZaOkDwtI8cgY9krDF3PSJl82P8" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>輸入ブラックジャック (Imported Blackjack) - 自分だけ閲覧</title>
-  <!-- 検索エンジン用の設定 (SEO) -->
-<meta name="description" content="ちゃんぴおんず大津・さらば青春の光で話題の『輸入ブラックジャック』がブラウザで遊べるWebアプリ。自分だけ手札が見える機能付き！">
-<meta name="keywords" content="輸入ブラックジャック,ブラックジャック,ちゃんぴおんず,さらば青春の光,大津,カードゲーム,Webアプリ">
+  <title>輸入ブラックジャック (Imported Blackjack)</title>
+  
+  <!-- SEO & OGP -->
+  <meta name="description" content="ちゃんぴおんず大津・さらば青春の光で話題の『輸入ブラックジャック』がブラウザで遊べるWebアプリ。自分だけ手札が見える機能付き！">
+  <meta name="keywords" content="輸入ブラックジャック,ブラックジャック,ちゃんぴおんず,さらば青春の光,大津,カードゲーム,Webアプリ">
+  <meta property="og:title" content="輸入ブラックジャック - 無料ブラウザゲーム">
+  <meta property="og:description" content="ちゃんぴおんず大津考案『輸入ブラックジャック』をオンラインでプレイ！">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://takuro278.github.io/imported-blackjack/">
 
-<!-- SNS等でシェアされた際の設定 (OGP) -->
-<meta property="og:title" content="輸入ブラックジャック - 無料ブラウザゲーム">
-<meta property="og:description" content="ちゃんぴおんず大津考案『輸入ブラックジャック』をオンラインでプレイ！">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://takuro278.github.io/imported-blackjack/">
   <style>
     :root {
-      --bg-color: #0f2b1d;
-      --card-bg: #ffffff;
+      --bg-gradient: radial-gradient(circle at center, #1b4d3e 0%, #0a1f18 70%, #050d0a 100%);
+      --panel-bg: rgba(10, 25, 18, 0.75);
+      --panel-border: rgba(212, 175, 55, 0.3);
       --accent-gold: #f39c12;
+      --gold-gradient: linear-gradient(135deg, #f39c12 0%, #d4af37 50%, #aa7c11 100%);
       --accent-red: #e74c3c;
       --accent-blue: #3498db;
-      --text-light: #ecf0f1;
+      --text-light: #f8f9fa;
+      --shadow-card: 0 6px 12px rgba(0,0,0,0.5);
     }
 
     * {
@@ -29,115 +32,123 @@
       margin: 0;
       padding: 0;
       user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
-      background: radial-gradient(circle, #1a4a32 0%, #08170f 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg-gradient);
       color: var(--text-light);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 15px;
+      padding: 10px;
     }
 
     header {
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     h1 {
-      font-size: 1.8rem;
-      color: var(--accent-gold);
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
-      letter-spacing: 2px;
+      font-size: 1.5rem;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+      letter-spacing: 1.5px;
     }
 
     .sub-title {
-      font-size: 0.85rem;
-      opacity: 0.8;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.7);
     }
 
     /* ステータスバー */
     .phase-bar {
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(243, 156, 18, 0.3);
-      padding: 8px 20px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--panel-border);
+      padding: 6px 16px;
       border-radius: 20px;
       font-weight: bold;
+      font-size: 0.85rem;
       color: var(--accent-gold);
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       text-align: center;
       width: 100%;
-      max-width: 600px;
+      max-width: 500px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
 
-    /* ゲームフィールド */
+    /* メインゲームテーブル */
     .table-container {
       width: 100%;
-      max-width: 650px;
-      background: rgba(0, 0, 0, 0.25);
+      max-width: 500px;
+      background: var(--panel-bg);
       border-radius: 16px;
-      border: 2px solid rgba(255, 255, 255, 0.1);
-      padding: 15px;
+      border: 1px solid var(--panel-border);
+      padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 15px;
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+      gap: 10px;
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 8px 24px rgba(0,0,0,0.6);
+      backdrop-filter: blur(5px);
     }
 
     .player-area {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      padding: 12px;
-      position: relative;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+      padding: 8px;
+      border: 1px solid rgba(255,255,255,0.05);
     }
 
     .area-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
-      font-size: 0.95rem;
+      margin-bottom: 6px;
+      font-size: 0.85rem;
+      font-weight: bold;
     }
 
     .score-badge {
-      background: #2c3e50;
-      padding: 4px 10px;
-      border-radius: 12px;
+      background: rgba(0,0,0,0.5);
+      padding: 2px 8px;
+      border-radius: 10px;
       font-weight: bold;
-      border: 1px solid rgba(255,255,255,0.2);
+      border: 1px solid var(--panel-border);
+      color: var(--accent-gold);
     }
 
     .card-hand {
       display: flex;
-      justify-content: space-around;
-      gap: 8px;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     /* カードデザイン */
     .card {
-      width: 70px;
-      height: 100px;
-      background: white;
-      border-radius: 8px;
-      color: #333;
+      width: 62px;
+      height: 90px;
+      background: linear-gradient(145deg, #ffffff, #e6e6e6);
+      border-radius: 6px;
+      color: #222;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 6px;
+      padding: 4px 6px;
       font-weight: bold;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      box-shadow: var(--shadow-card);
       position: relative;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s, border 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    /* CPU側の伏せカード */
     .card.face-down {
-      background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
-      border: 2px solid #34495e;
+      background: linear-gradient(135deg, #1f2a38 0%, #0d131a 100%);
+      border: 1px solid #3a4b5c;
       color: transparent;
     }
 
@@ -147,35 +158,53 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      color: rgba(255,255,255,0.15);
-      font-size: 0.8rem;
+      color: rgba(212, 175, 55, 0.3);
+      font-size: 0.75rem;
+      letter-spacing: 1px;
     }
 
-    /* 自分側の伏せカード（自分だけ閲覧中） */
     .card.my-hidden {
-      opacity: 0.8; /* わずかに半透明 */
-      background-color: #f0f0f0; /* 少し暗い白 */
+      opacity: 0.85;
+      background: linear-gradient(145deg, #f0f0f0, #cccccc);
+      border: 2px dashed #888;
     }
 
     .card.red { color: var(--accent-red); }
-    .card.black { color: #2c3e50; }
+    .card.black { color: #1a252f; }
 
     .card.selected {
-      transform: translateY(-10px);
-      box-shadow: 0 0 12px var(--accent-gold);
-      border: 3px solid var(--accent-gold);
+      transform: translateY(-8px);
+      box-shadow: 0 0 15px var(--accent-gold);
+      border: 2px solid var(--accent-gold);
+    }
+
+    /* カードめくりアニメーション */
+    .card.flip-anim {
+      animation: cardFlip 0.5s ease-out;
+    }
+
+    @keyframes cardFlip {
+      0% {
+        transform: rotateY(90deg) scale(0.8);
+        opacity: 0.3;
+      }
+      100% {
+        transform: rotateY(0deg) scale(1);
+        opacity: 1;
+      }
     }
 
     .card-badge {
       position: absolute;
-      top: -8px;
-      right: -5px;
-      font-size: 0.65rem;
-      padding: 2px 5px;
-      border-radius: 4px;
+      top: -6px;
+      right: -4px;
+      font-size: 0.6rem;
+      padding: 1px 4px;
+      border-radius: 3px;
       color: white;
       font-weight: bold;
       z-index: 2;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
     .badge-open { background: var(--accent-blue); }
@@ -183,56 +212,63 @@
 
     /* 中央操作パネル */
     .center-panel {
-      min-height: 110px;
-      background: rgba(0,0,0,0.4);
-      border-radius: 12px;
-      padding: 12px;
+      min-height: 95px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 10px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       text-align: center;
+      border: 1px solid rgba(255,255,255,0.05);
     }
 
     .msg-box {
-      font-size: 0.95rem;
-      line-height: 1.4;
+      font-size: 0.85rem;
+      line-height: 1.3;
       color: #fff;
     }
 
     .btn-group {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       width: 100%;
       justify-content: center;
     }
 
     button {
-      background: linear-gradient(180deg, #f39c12 0%, #d35400 100%);
+      background: var(--gold-gradient);
       border: none;
-      color: white;
-      padding: 10px 20px;
-      font-size: 0.95rem;
+      color: #111;
+      padding: 10px 16px;
+      font-size: 0.85rem;
       font-weight: bold;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
       transition: opacity 0.2s, transform 0.1s;
     }
 
-    button:hover { opacity: 0.9; }
-    button:active { transform: scale(0.97); }
+    button:active { transform: scale(0.96); }
     button:disabled {
-      background: #7f8c8d;
+      background: #4a5568;
+      color: #a0aec0;
       cursor: not-allowed;
-      opacity: 0.6;
+      box-shadow: none;
     }
 
-    button.btn-check { background: linear-gradient(180deg, #27ae60 0%, #1e8449 100%); }
-    button.btn-trade { background: linear-gradient(180deg, #e67e22 0%, #d35400 100%); }
+    button.btn-check {
+      background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
+      color: white;
+    }
+    button.btn-trade {
+      background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+      color: white;
+    }
 
-    /* モーダル (手札作成・結果発表) */
+    /* モーダル */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -241,73 +277,121 @@
       justify-content: center;
       align-items: center;
       z-index: 100;
-      padding: 15px;
+      padding: 12px;
+      backdrop-filter: blur(4px);
     }
 
     .modal-content {
-      background: #1e372b;
-      border: 2px solid var(--accent-gold);
-      border-radius: 16px;
-      padding: 20px;
-      max-width: 500px;
+      background: #0f241a;
+      border: 1px solid var(--accent-gold);
+      border-radius: 14px;
+      padding: 16px;
+      max-width: 420px;
       width: 100%;
       text-align: center;
-      max-height: 90vh;
-      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
     }
 
     .modal-title {
       color: var(--accent-gold);
-      font-size: 1.4rem;
-      margin-bottom: 10px;
-    }
-
-    .deck-builder-pool {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-      margin: 15px 0;
-    }
-
-    .pool-card {
-      background: white;
-      border-radius: 6px;
-      padding: 8px;
+      font-size: 1.2rem;
       font-weight: bold;
-      color: #333;
-      cursor: pointer;
-      border: 2px solid transparent;
-    }
-
-    .pool-card.red { color: var(--accent-red); }
-    .pool-card.black { color: #2c3e50; }
-    .pool-card.selected-pool {
-      border-color: var(--accent-gold);
-      background: #f1f2f6;
-      opacity: 0.5;
+      margin-bottom: 8px;
     }
 
     .builder-slots {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 15px;
+      gap: 8px;
+      margin-bottom: 10px;
     }
 
     .slot {
-      width: 55px;
-      height: 80px;
+      width: 52px;
+      height: 72px;
       border: 2px dashed rgba(255,255,255,0.3);
       border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .slot:hover {
+      border-color: var(--accent-gold);
     }
 
     .slot.filled {
-      border: 1px solid white;
-      background: white;
+      border: 2px solid var(--accent-gold);
+      background: #ffffff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      font-size: 1.1rem;
+    }
+
+    .slot.filled.red {
+      color: #e74c3c !important;
+    }
+
+    .slot.filled.black {
+      color: #1a252f !important;
+    }
+
+    .slot.filled::after {
+      content: '✕';
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      font-size: 0.65rem;
+      color: #888;
+      opacity: 0.7;
+    }
+
+    .deck-builder-pool {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin: 12px 0;
+    }
+
+    .pool-card {
+      background: #fff;
+      border-radius: 6px;
+      padding: 8px 2px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: #222;
+      cursor: pointer;
+      border: 2px solid transparent;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .pool-card.red { color: #e74c3c; }
+    .pool-card.black { color: #1a252f; }
+
+    .pool-card.selected-pool {
+      background: #23332b;
+      border-color: var(--accent-gold);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .pool-card.selected-pool.red { color: #e74c3c; opacity: 0.65; }
+    .pool-card.selected-pool.black { color: #cbd5e1; opacity: 0.65; }
+
+    .pool-card.selected-pool::after {
+      content: '✓';
+      position: absolute;
+      top: 1px;
+      right: 3px;
+      font-size: 0.65rem;
+      color: var(--accent-gold);
+      font-weight: bold;
     }
 
     .hidden { display: none !important; }
@@ -318,7 +402,6 @@
   <header>
     <h1>輸入ブラックジャック</h1>
     <div class="sub-title">～ さらば青春の光 / ちゃんぴおんず大津考案 ～</div>
-    <div class="sub-title">(自分だけ閲覧機能追加)</div>
   </header>
 
   <div class="phase-bar" id="phaseBar">ゲームを準備中...</div>
@@ -327,7 +410,7 @@
     <!-- CPUエリア -->
     <div class="player-area">
       <div class="area-header">
-        <span>対戦相手 (大津風CPU)</span>
+        <span>対戦相手 (CPU)</span>
         <span class="score-badge" id="cpuScore">合計: ??</span>
       </div>
       <div class="card-hand" id="cpuHand"></div>
@@ -352,8 +435,8 @@
   <!-- 手札構築モーダル -->
   <div class="modal-overlay" id="deckModal">
     <div class="modal-content">
-      <div class="modal-title">手札（4枚）の構築</div>
-      <p style="font-size:0.85rem; margin-bottom:10px;">合計が<b>21以下</b>になるようにカードを4枚選んでください。</p>
+      <div class="modal-title">手札（4枚）の作成</div>
+      <p style="font-size:0.75rem; margin-bottom:8px; color:#ccc;">合計が<b>21以下</b>になるように選んでください。</p>
       
       <div class="builder-slots" id="builderSlots">
         <div class="slot">1</div>
@@ -362,15 +445,15 @@
         <div class="slot">4</div>
       </div>
 
-      <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 15px;">
+      <div style="font-size: 1rem; font-weight: bold; margin-bottom: 10px;">
         現在の合計: <span id="builderTotal" style="color:var(--accent-gold);">0</span> / 21
       </div>
 
       <div class="deck-builder-pool" id="cardPool"></div>
 
       <div class="btn-group">
-        <button onclick="autoFillDeck()">ランダム自動選択</button>
-        <button id="confirmDeckBtn" onclick="confirmPlayerDeck()" disabled>決定して勝負</button>
+        <button onclick="autoFillDeck()">おまかせ選択</button>
+        <button id="confirmDeckBtn" onclick="confirmPlayerDeck()" disabled>勝負開始</button>
       </div>
     </div>
   </div>
@@ -379,13 +462,12 @@
   <div class="modal-overlay hidden" id="resultModal">
     <div class="modal-content">
       <div class="modal-title" id="resultTitle">結果発表</div>
-      <p id="resultDetail" style="margin: 15px 0; line-height: 1.6;"></p>
+      <p id="resultDetail" style="margin: 12px 0; font-size: 0.9rem; line-height: 1.5;"></p>
       <button onclick="resetGame()">もう一度遊ぶ</button>
     </div>
   </div>
 
   <script>
-    // --- ゲーム状態変数 ---
     let playerHand = [];
     let cpuHand = [];
     let phase = 'INIT';
@@ -394,10 +476,9 @@
     let selectedPlayerCardIndex = null;
     let turnCount = 1;
 
-    // カードプール
     const suits = [{s:'♠', c:'black'}, {s:'♥', c:'red'}];
-    
-    // --- 初期化 ---
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+
     window.onload = () => {
       initDeckBuilder();
     };
@@ -406,42 +487,70 @@
       const poolContainer = document.getElementById('cardPool');
       poolContainer.innerHTML = '';
       playerHand = [];
-      updateBuilderUI();
+
+      // スロットクリックで解除可能にする
+      const slots = document.querySelectorAll('.slot');
+      slots.forEach((slot, idx) => {
+        slot.onclick = () => removeSlotCard(idx);
+      });
 
       for (let val = 1; val <= 10; val++) {
         suits.forEach(suit => {
           const cardEl = document.createElement('div');
           cardEl.className = `pool-card ${suit.c}`;
+          cardEl.dataset.suit = suit.s;
+          cardEl.dataset.value = val;
           cardEl.innerText = `${suit.s}${val}`;
-          cardEl.onclick = () => selectPoolCard(val, suit.s, suit.c, cardEl);
+          cardEl.onclick = () => selectPoolCard(val, suit.s, suit.c);
           poolContainer.appendChild(cardEl);
         });
       }
+
+      updateBuilderUI();
       document.getElementById('deckModal').classList.remove('hidden');
     }
 
-    // --- 手札構築ロジック ---
-    function selectPoolCard(value, suit, color, element) {
-      if (element.classList.contains('selected-pool')) return;
+    function selectPoolCard(value, suit, color) {
+      if (playerHand.some(c => c.suit === suit && c.value === value)) return;
       if (playerHand.length >= 4) return;
 
-      playerHand.push({ value, suit, color, faceUp: false, isTraded: false, isOpenInitial: false });
-      element.classList.add('selected-pool');
+      playerHand.push({ value, suit, color, faceUp: false, isTraded: false, isOpenInitial: false, justFlipped: false });
       updateBuilderUI();
+    }
+
+    function removeSlotCard(index) {
+      if (index < playerHand.length) {
+        playerHand.splice(index, 1);
+        updateBuilderUI();
+      }
     }
 
     function updateBuilderUI() {
       const slots = document.querySelectorAll('.slot');
       let sum = 0;
 
+      // プール内のカードの選択状態を更新
+      const poolCards = document.querySelectorAll('.pool-card');
+      poolCards.forEach(cardEl => {
+        const suit = cardEl.dataset.suit;
+        const value = parseInt(cardEl.dataset.value, 10);
+        const isSelected = playerHand.some(c => c.suit === suit && c.value === value);
+        if (isSelected) {
+          cardEl.classList.add('selected-pool');
+        } else {
+          cardEl.classList.remove('selected-pool');
+        }
+      });
+
+      // スロット（手札）の表示更新
       slots.forEach((slot, i) => {
         if (playerHand[i]) {
           slot.className = `slot filled ${playerHand[i].color}`;
-          slot.innerText = `${playerHand[i].suit}${playerHand[i].value}`;
+          slot.innerHTML = `${playerHand[i].suit}${playerHand[i].value}`;
           sum += playerHand[i].value;
         } else {
           slot.className = 'slot';
-          slot.innerText = i + 1;
+          slot.innerHTML = i + 1;
         }
       });
 
@@ -455,7 +564,6 @@
 
     function autoFillDeck() {
       playerHand = [];
-      document.querySelectorAll('.pool-card').forEach(el => el.classList.remove('selected-pool'));
 
       while (true) {
         let tempHand = [];
@@ -471,7 +579,7 @@
 
         const sum = tempHand.reduce((a, b) => a + b.value, 0);
         if (sum <= 21) {
-          playerHand = tempHand.map(c => ({ ...c, faceUp: false, isTraded: false, isOpenInitial: false }));
+          playerHand = tempHand.map(c => ({ ...c, faceUp: false, isTraded: false, isOpenInitial: false, justFlipped: false }));
           break;
         }
       }
@@ -500,34 +608,33 @@
 
         const sum = tempHand.reduce((a, b) => a + b.value, 0);
         if (sum >= 15 && sum <= 21) {
-          cpuHand = tempHand.map(c => ({ ...c, faceUp: false, isTraded: false, isOpenInitial: false }));
+          cpuHand = tempHand.map(c => ({ ...c, faceUp: false, isTraded: false, isOpenInitial: false, justFlipped: false }));
           break;
         }
       }
     }
 
-    // --- ゲーム進行メイン ---
     function startBoardGame() {
       renderHands();
       setPhase('1枚ランダムオープン');
       
       setTimeout(() => {
-        const pDrawPool = [0, 1, 2, 3];
-        const pIdx = pDrawPool[Math.floor(Math.random() * pDrawPool.length)];
-        const cDrawPool = [0, 1, 2, 3];
-        const cIdx = cDrawPool[Math.floor(Math.random() * cDrawPool.length)];
+        const pIdx = Math.floor(Math.random() * 4);
+        const cIdx = Math.floor(Math.random() * 4);
 
         playerHand[pIdx].faceUp = true;
         playerHand[pIdx].isOpenInitial = true;
-        
+        playerHand[pIdx].justFlipped = true;
+
         cpuHand[cIdx].faceUp = true;
         cpuHand[cIdx].isOpenInitial = true;
+        cpuHand[cIdx].justFlipped = true;
 
         renderHands();
-        setMsg(`お互いの手札から1枚が公開されました！<br>あなた: <b>${playerHand[pIdx].suit}${playerHand[pIdx].value}</b> / CPU: <b>${cpuHand[cIdx].suit}${cpuHand[cIdx].value}</b>`);
+        setMsg(`1枚ずつ公開されました！<br>あなた: <b>${playerHand[pIdx].suit}${playerHand[pIdx].value}</b> / CPU: <b>${cpuHand[cIdx].suit}${cpuHand[cIdx].value}</b>`);
 
-        setTimeout(determineInitiative, 2500);
-      }, 1000);
+        setTimeout(determineInitiative, 2000);
+      }, 800);
     }
 
     function determineInitiative() {
@@ -541,46 +648,46 @@
       }
 
       firstPlayer = pDraw > cDraw ? 'player' : 'cpu';
-      const firstStr = firstPlayer === 'player' ? 'あなた (プレイヤー)' : '対戦相手 (CPU)';
+      const firstStr = firstPlayer === 'player' ? 'あなた' : 'CPU';
       
-      setMsg(`山札からカードを引きました。<br>あなた: <b>${pDraw}</b> VS CPU: <b>${cDraw}</b><br><b>${firstStr}</b> の先攻です！`);
+      setMsg(`引き札勝負 (あなた:${pDraw} VS CPU:${cDraw})<br><b>${firstStr}</b> の先攻です！`);
 
       setTimeout(() => {
         turnCount = 1;
         currentTurnPlayer = firstPlayer;
         startTurn();
-      }, 2500);
+      }, 2000);
     }
 
     function startTurn() {
       setPhase(`ターン ${turnCount} (${currentTurnPlayer === 'player' ? 'あなたの番' : 'CPUの番'})`);
 
       if (currentTurnPlayer === 'player') {
-        setMsg('あなたの番です。チェックするかトレードするか選んでください。');
+        setMsg('あなたの番です。アクションを選択してください。');
         showActionButtons([
-          { text: 'チェック (維持)', class: 'btn-check', action: () => handleCheck() },
-          { text: 'トレード (交換)', class: 'btn-trade', action: () => prepareTrade() }
+          { text: 'チェック', class: 'btn-check', action: () => handleCheck() },
+          { text: 'トレード', class: 'btn-trade', action: () => prepareTrade() }
         ]);
       } else {
         setMsg('CPUが長考しています...');
         hideActionButtons();
-        setTimeout(cpuDecideTurn, 2000);
+        setTimeout(cpuDecideTurn, 1800);
       }
     }
 
     function handleCheck() {
       setMsg(`${currentTurnPlayer === 'player' ? 'あなた' : 'CPU'} は <b>チェック</b> を選択しました。`);
       hideActionButtons();
-      setTimeout(nextTurn, 1500);
+      setTimeout(nextTurn, 1200);
     }
 
     function prepareTrade() {
-      setMsg('交換に出す<b>自分のカード</b>を1枚選択してください。<br>(自分に見えている非公開カードも選択可能です)');
+      setMsg('交換に出す<b>自分のカード</b>を選択してください。');
       selectedPlayerCardIndex = null;
       renderHands(true);
       
       showActionButtons([
-        { text: '選択したカードでトレード実行', class: 'btn-trade', id: 'execTradeBtn', disabled: true, action: () => executeTrade() }
+        { text: 'トレード実行', class: 'btn-trade', id: 'execTradeBtn', disabled: true, action: () => executeTrade() }
       ]);
     }
 
@@ -600,8 +707,11 @@
 
       pCard.faceUp = true;
       pCard.isTraded = true;
+      pCard.justFlipped = true;
+
       cCard.faceUp = true;
       cCard.isTraded = true;
+      cCard.justFlipped = true;
 
       playerHand[pIdx] = cCard;
       cpuHand[cIdx] = pCard;
@@ -609,10 +719,10 @@
       selectedPlayerCardIndex = null;
       renderHands();
 
-      setMsg(`トレード成立！<br>あなたが渡したカード: <b>${pCard.suit}${pCard.value}</b><br>CPUから受け取ったカード: <b>${cCard.suit}${cCard.value}</b>`);
+      setMsg(`トレード成立！<br>渡したカード: <b>${pCard.suit}${pCard.value}</b><br>受け取ったカード: <b>${cCard.suit}${cCard.value}</b>`);
       hideActionButtons();
 
-      setTimeout(nextTurn, 3000);
+      setTimeout(nextTurn, 2500);
     }
 
     function nextTurn() {
@@ -634,37 +744,62 @@
         setMsg('CPUは <b>トレード</b> を宣言しました！');
         setTimeout(() => {
           prepareTrade();
-        }, 1500);
+        }, 1200);
       }
     }
 
     function cpuSelectCardToTrade() {
       const cpuSum = cpuHand.reduce((a, b) => a + b.value, 0);
-      
       let targetIdx = 0;
       if (cpuSum > 18) {
         let maxVal = -1;
-        cpuHand.forEach((c, i) => {
-          if (c.value > maxVal) { maxVal = c.value; targetIdx = i; }
-        });
+        cpuHand.forEach((c, i) => { if (c.value > maxVal) { maxVal = c.value; targetIdx = i; } });
       } else {
         let minVal = 99;
-        cpuHand.forEach((c, i) => {
-          if (c.value < minVal) { minVal = c.value; targetIdx = i; }
-        });
+        cpuHand.forEach((c, i) => { if (c.value < minVal) { minVal = c.value; targetIdx = i; } });
       }
       return targetIdx;
     }
 
-    function startShowdown() {
+    /* 演出を強化した最終勝負処理 */
+    async function startShowdown() {
       setPhase('最終勝負 (オープン)');
-      
-      playerHand.forEach(c => c.faceUp = true);
-      cpuHand.forEach(c => c.faceUp = true);
-      renderHands();
+      hideActionButtons();
 
+      // 1. あなたの裏カードを1枚ずつ開示
+      setMsg('あなたの手札を開示中...');
+      for (let i = 0; i < playerHand.length; i++) {
+        if (!playerHand[i].faceUp) {
+          playerHand[i].faceUp = true;
+          playerHand[i].justFlipped = true;
+          renderHands();
+          await delay(750);
+        }
+      }
+
+      await delay(400);
+
+      // 2. CPUの裏カードを1枚ずつ開示（ドラムロール的演出）
+      setMsg('CPUの手札を開示中...');
+      for (let i = 0; i < cpuHand.length; i++) {
+        if (!cpuHand[i].faceUp) {
+          cpuHand[i].faceUp = true;
+          cpuHand[i].justFlipped = true;
+          renderHands();
+          await delay(800);
+        }
+      }
+
+      // CPUの合計得点をオープン表示
+      const cFinalSum = cpuHand.reduce((a, b) => a + b.value, 0);
+      document.getElementById('cpuScore').innerText = `合計: ${cFinalSum}`;
+
+      setMsg('勝敗判定中...');
+      await delay(1200);
+
+      // 3. 勝敗判定
       const pSum = playerHand.reduce((a, b) => a + b.value, 0);
-      const cSum = cpuHand.reduce((a, b) => a + b.value, 0);
+      const cSum = cFinalSum;
 
       const pBurst = pSum > 21;
       const cBurst = cSum > 21;
@@ -674,13 +809,13 @@
 
       if (pBurst && cBurst) {
         title = '引き分け (両者バースト)';
-        detail += '両者21を超えたため、引き分けです！';
+        detail += '両者21を超えたため引き分けです。';
       } else if (pBurst) {
         title = 'CPUの勝利！';
-        detail += 'あなたが21を超えてバーストしたため負けです。';
+        detail += 'あなたがバーストしたため負けです。';
       } else if (cBurst) {
         title = 'あなたの勝利！';
-        detail += 'CPUが21を超えてバーストしました！';
+        detail += 'CPUがバーストしました！';
       } else if (pSum > cSum) {
         title = 'あなたの勝利！';
         detail += pSum === 21 ? '🎉 ブラックジャック達成！' : '21により近いあなたの勝ちです！';
@@ -691,29 +826,40 @@
         const pMax = Math.max(...playerHand.map(c => c.value));
         const cMax = Math.max(...cpuHand.map(c => c.value));
 
-        detail += `同点のため、手札の「一番大きいカード」で勝負！<br>あなた最大: <b>${pMax}</b> / CPU最大: <b>${cMax}</b><br><br>`;
+        detail += `同点のためハイカード勝負！<br>あなた最大: <b>${pMax}</b> / CPU最大: <b>${cMax}</b><br><br>`;
 
         if (pMax > cMax) {
-          title = 'あなたの勝利！ (ハイカード判定)';
+          title = 'あなたの勝利！ (ハイカード)';
         } else if (cMax > pMax) {
-          title = 'CPUの勝利！ (ハイカード判定)';
+          title = 'CPUの勝利！ (ハイカード)';
         } else {
           title = '完全な引き分け！';
         }
       }
 
-      setTimeout(() => {
-        showResultModal(title, detail);
-      }, 1000);
+      showResultModal(title, detail);
     }
 
-    // --- UI描画ヘルパー ---
     function renderHands(selectable = false) {
-      renderHand('playerHand', playerHand, true, selectable); // あなたの手札
-      renderHand('cpuHand', cpuHand, false, false); // CPUの手札
+      renderHand('playerHand', playerHand, true, selectable);
+      renderHand('cpuHand', cpuHand, false, false);
+      
+      const pSum = playerHand.reduce((a, b) => a + b.value, 0);
+      document.getElementById('playerScore').innerText = `合計: ${pSum}`;
+
+      // CPUの公開済みカードの合計値をリアルタイム表示
+      const cpuVisibleSum = cpuHand.filter(c => c.faceUp).reduce((a, b) => a + b.value, 0);
+      const allCpuFaceUp = cpuHand.length > 0 && cpuHand.every(c => c.faceUp);
+
+      if (allCpuFaceUp) {
+        document.getElementById('cpuScore').innerText = `合計: ${cpuVisibleSum}`;
+      } else if (cpuVisibleSum > 0) {
+        document.getElementById('cpuScore').innerText = `合計: ${cpuVisibleSum} (+?)`;
+      } else {
+        document.getElementById('cpuScore').innerText = `合計: ??`;
+      }
     }
 
-    // 🌟 今回の修正の肝となる関数 🌟
     function renderHand(containerId, hand, isPlayer, selectable) {
       const container = document.getElementById(containerId);
       container.innerHTML = '';
@@ -721,30 +867,23 @@
       hand.forEach((card, idx) => {
         const cardEl = document.createElement('div');
         
-        // --- ここを修正 ---
-        // プレイヤーの手札（自分側）は常に表向きにするが、
-        // ゲーム上伏せられているカードには視覚効果を付ける
-        
-        // 条件：プレイヤー自身の手札である場合、または、カードが公開状態である場合
         if (isPlayer || card.faceUp) {
-          cardEl.className = `card ${card.color}`;
+          const flipClass = card.justFlipped ? ' flip-anim' : '';
+          cardEl.className = `card ${card.color}${flipClass}`;
           
-          // プレイヤー自身の手札で、かつゲーム上は伏せられている場合
           if (isPlayer && !card.faceUp) {
-            cardEl.classList.add('my-hidden'); // CSSで視覚効果（半透明など）を適用
+            cardEl.classList.add('my-hidden');
           }
 
           cardEl.innerHTML = `
             <div>${card.suit}${card.value}</div>
-            <div style="text-align:center; font-size:1.4rem;">${card.suit}</div>
+            <div style="text-align:center; font-size:1.2rem;">${card.suit}</div>
             <div style="text-align:right;">${card.value}</div>
           `;
         } else {
-          // CPUの手札で伏せられている場合は従来通りface-down
           cardEl.className = 'card face-down';
         }
 
-        // バッジ付与（公開・交換）
         if (card.isOpenInitial) {
           const badge = document.createElement('div');
           badge.className = 'card-badge badge-open';
@@ -757,7 +896,6 @@
           cardEl.appendChild(badge);
         }
 
-        // 選択イベント (トレード時)
         if (isPlayer && selectable) {
           if (selectedPlayerCardIndex === idx) {
             cardEl.classList.add('selected');
@@ -766,6 +904,9 @@
         }
 
         container.appendChild(cardEl);
+        
+        // アニメーション再生後にフラグをリセット
+        card.justFlipped = false;
       });
     }
 
@@ -804,6 +945,7 @@
 
     function resetGame() {
       document.getElementById('resultModal').classList.add('hidden');
+      document.getElementById('cpuScore').innerText = '合計: ??';
       initDeckBuilder();
     }
   </script>
